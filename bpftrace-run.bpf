@@ -1,0 +1,9 @@
+t:syscalls:sys_enter_execve {
+	printf("ATULU:enter pid:%d \t comm: %s \t %s\n", pid, comm, str(args->filename));
+	}
+
+t:syscalls:sys_exit_execve {
+	printf("ATULU:exit pid:%d \t comm: %s \t ret: %d\n", pid, comm, args->ret);
+	}
+
+t:syscalls:sys_enter_mmap { printf("ATULU: enter mmap: pid %d \t comm: %s\n", pid, comm); }
