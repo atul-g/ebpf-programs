@@ -50,9 +50,10 @@ int my_sys_enter_openat_fn(struct sys_enter_openat_args *args)
     //too. The upper 32 bits are tgid.
     u64 tgid_pid = bpf_get_current_pid_tgid();
     u32 tgid = (u32)(tgid_pid >> 32);
-    u32 pid = (u32)(tgid_pid);
+    
+    //u32 pid = (u32)(tgid_pid); <- dont need this
 
-    data.pid = pid;
+    data.pid = tgid;
     bpf_probe_read_str(data.comm, TASK_COMM_LEN, args->filename);
 
     // there is a doube // because remember this is a python string
