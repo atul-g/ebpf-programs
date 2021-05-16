@@ -1,19 +1,17 @@
-# Messing with bpf
+# ebpf programs
 
-1. Using `bpftrace` -  run the command as root user: `bpftrace
-   bpftrace-run.bpf` Refer to other available arguments via
-   `/sys/kernel/tracing/events/syscalls/<some_syscall_enter_or_exit>/format`
+This repository contains my work on trying to trace kernel syscalls and
+functions using ebpf. I've also traced return values of core kernel functions
+based on commands invoking it.
 
-2. Installing bpfcc-tools in ubuntu installs a slightly older version, which
-   yields a "bcc.containers not found" module error when trying to run
-   `execsnoop.py`. Apart from that, `execsnoop.py` injects bpf code into kernel
-   which makes use of bpf helper functions which were only added in kernel 5.5
-   and later while my ubuntu used a 5.4. So for these reasons, I downloaded
-   `execsnoop.py` from the v0.10 tag (branch) from github.
+* `ret_check` gets the return value of kernel's memory policy function on the
+  condition that it is executed by a specific C reproducer (used it for
+  debugging core functions).
 
-3. Also, change the shebang in `execsnoop.py` to "python3" and chmod it to
-   "+x", so you can simply run `sudo ./execsnoop.py`.
+* `my-openat-tracer.py` for getting information on all open-at syscall
+  invocations. This gave me an idea on the disk activity of system so I could
+  stop the processes causing unnecessary opening of files at a high rate. Note
+  to self, python can be dead-slow at catching all perf ring buffer events
+  during high activity.
 
-4. For BCC, check out their API [reference
-   guide](https://github.com/iovisor/bcc/blob/master/docs/reference_guide.md)
-   for understanding the arguments of certain functions and what they do.
+* Rest are trials. Still under progress.
