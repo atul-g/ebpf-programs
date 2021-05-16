@@ -91,7 +91,8 @@ def handle_openat_syscall(cpu, data, size):
 
 bpf['events'].open_perf_buffer(handle_openat_syscall)
 
-#After this, cat /sys/kernel/debug/tracing in a different terminal
+#After this, cat /sys/kernel/debug/tracing/trace_pipe in a different
+#terminal
 
 while True:
     try:
