@@ -23,3 +23,8 @@
    seems to work fine. Need to fix this. Note that, currently there is some
    macro redefinition error. It shouldn't matter much, it's already been
    discussed in BPF and they will likely fix it soon.
+
+6. Fixed the error, ebpf doesn't work with un-bounded loops, for some reason
+   \_\_builtin\_memcmp() was also being rejected by verifier. On using a for
+   loop for doing string comparison, the error didn't show up. The error
+   message also didn't make any sense compared to what the actual problem was.

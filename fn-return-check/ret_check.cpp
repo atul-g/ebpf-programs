@@ -10,19 +10,17 @@ std::string bpf_source = R"(
 
 //writing own implementation of strncmp, as bpf doesn't provide
 //libc
-static int string_check(const char *s1, const char *s2, size_t n)
+static int string_cmp(const char *s1, const char *s2, size_t n)
 {
-    while (n && *s1 && ( *s1 == *s2 )) {
-	    ++s1;
-            ++s2;
-            --n;
-    }
+	int res = 0;
+	for (int i = 0; i < n; i++) {
+		if (s1[i] != s2[i]) {
+			res = 1;
+			break;
+		}
+	}
 
-    if ( n == 0 )
-            return 0;
-
-    else
-            return ( *(unsigned char *)s1 - *(unsigned char *)s2 );
+	return res;
 }
 
 int check_set_nodemask(struct pt_regs *ctx)
@@ -37,12 +35,11 @@ int check_set_nodemask(struct pt_regs *ctx)
 
 	bpf_trace_printk("PID: %d \t COMM: %s\n", pid, comm);
 
-	// FIXME - the if condition renders current problem
-	//if (string_check(comm, C_REPRO_NAME, NAME_SIZE) == 0) {
-	//	//the return value of mpol_set_nodemask()
-	//	int ret = PT_REGS_RC(ctx);
-	//	bpf_trace_printk("Return value of function mpol_set_nodemask: %d\n", ret);
-	//}
+	if (string_cmp(comm, C_REPRO_NAME, NAME_SIZE) == 0) {
+		//the return value of mpol_set_nodemask()
+		int ret = PT_REGS_RC(ctx);
+		bpf_trace_printk("Return value of function mpol_set_nodemask: %d\n", ret);
+	}
 
 	return 0;	
 }
